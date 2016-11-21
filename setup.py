@@ -26,7 +26,7 @@ setup(
     packages=find_packages('.'),
     install_requires=[
         'html5validator',
-        'pystache',
+        'pybars3',
     ],
     entry_points={
         'console_scripts': [

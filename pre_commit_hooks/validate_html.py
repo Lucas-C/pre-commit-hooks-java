@@ -1,6 +1,7 @@
 from __future__ import print_function
-import argparse, contextlib, os, pystache, shutil, sys
+import argparse, contextlib, os, shutil, sys
 from collections import defaultdict
+from pybars import Compiler as PybarCompiler, PybarsError
 from html5validator.validator import Validator
 
 
@@ -49,7 +50,7 @@ def main(argv=None):
 
 
 class CustomHTMLValidator(Validator):
-    
+
     def __init__(self, mustache_remover_copy_ext, mustache_remover_default_value, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.mustache_remover_copy_ext = mustache_remover_copy_ext
@@ -66,6 +67,7 @@ class CustomHTMLValidator(Validator):
 
 @contextlib.contextmanager
 def generate_mustachefree_tmpfiles(filepaths, copy_ext, default_value):
+    tmplt_compiler = PybarCompiler()
     mustachefree_tmpfiles = []
 
     for filepath in filepaths:
@@ -73,7 +75,10 @@ def generate_mustachefree_tmpfiles(filepaths, copy_ext, default_value):
         shutil.copyfile(filepath, tmpfile)
         with open(filepath, 'r') as src_file:
             src_code = src_file.read()
-            code_without_mustaches = pystache.render(src_code, DefaultDictContainsEverything(lambda: default_value))
+            try:
+                code_without_mustaches = tmplt_compiler.compile(src_code)(defaultdict(lambda: default_value))
+            except PybarsError as error:
+                raise MustacheSubstitutionFail('For HTML template file {}'.format(filepath)) from error
             with open(tmpfile, 'w+') as new_tmpfile:
                 new_tmpfile.write(code_without_mustaches)
         mustachefree_tmpfiles.append(tmpfile)
@@ -84,13 +89,9 @@ def generate_mustachefree_tmpfiles(filepaths, copy_ext, default_value):
         for tmpfile in mustachefree_tmpfiles:
             os.remove(tmpfile)
 
-class DefaultDictContainsEverything(defaultdict):
-    """
-    Workaround because pystache.render does not follow EAFP and hence does not support defaultdicts,
-    cf. https://github.com/defunkt/pystache/issues/188
-    """
-    def __contains__(self, item):
-        return True
+
+class MustacheSubstitutionFail(Exception):
+    pass
 
 
 if __name__ == '__main__':
