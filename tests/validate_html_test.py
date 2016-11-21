@@ -13,7 +13,7 @@ HTML_WITH_HANDLEBAR_TITLE = '''<!DOCTYPE html>
     <title>Test</title>
 </head>
 <body>
-    <img alt="" src="http://root.website.com/{{#if img.src}}{{img.src}}{{/if}}"/>
+    <img alt="" src="http://root.website.com/{{#if img.title}}{{img.src}}{{/if}}"/>
 </body>
 </html>'''
 

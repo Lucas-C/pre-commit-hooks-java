@@ -10,7 +10,7 @@ The `--remove-mustaches` feature is currently pending on a bug fix: https://gith
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.0.1
+    sha: v1.0.2
     hooks:
     -   id: validate-html
         args: [--remove-mustaches]
