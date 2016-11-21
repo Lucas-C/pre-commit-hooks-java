@@ -1,0 +1,5 @@
+-   id: validate-html
+    name: HTML syntax validator using W3C v.Nu checker
+    entry: validate_html
+    language: python
+    files: .*\.(html|hbs)$
