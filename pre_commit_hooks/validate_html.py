@@ -1,6 +1,5 @@
 from __future__ import print_function
 import argparse, contextlib, os, shutil, sys
-from collections import defaultdict
 from pybars import Compiler as PybarCompiler, PybarsError
 from html5validator.validator import Validator
 
@@ -69,8 +68,6 @@ class CustomHTMLValidator(Validator):
 def generate_mustachefree_tmpfiles(filepaths, copy_ext, default_value):
     tmplt_compiler = PybarCompiler()
     mustachefree_tmpfiles = []
-    if isinstance(default_value, str):
-        default_value = StringWithoutMethods(default_value)
 
     for filepath in filepaths:
         tmpfile = filepath + copy_ext
@@ -79,7 +76,7 @@ def generate_mustachefree_tmpfiles(filepaths, copy_ext, default_value):
             template_content = src_file.read()
             try:
                 compiled_template = tmplt_compiler.compile(template_content)
-                code_without_mustaches = compiled_template(defaultdict(lambda: default_value))
+                code_without_mustaches = compiled_template(PybarConstantContext(default_value))
             except PybarsError as error:
                 raise MustacheSubstitutionFail('For HTML template file {}'.format(filepath)) from error
             with open(tmpfile, 'w+') as new_tmpfile:
@@ -92,53 +89,15 @@ def generate_mustachefree_tmpfiles(filepaths, copy_ext, default_value):
         for tmpfile in mustachefree_tmpfiles:
             os.remove(tmpfile)
 
-class StringWithoutMethods(str):
-    def _no_such_attribute(self):
-        raise AttributeError
-    capitalize = property(_no_such_attribute)
-    casefold = property(_no_such_attribute)
-    center = property(_no_such_attribute)
-    count = property(_no_such_attribute)
-    encode = property(_no_such_attribute)
-    endswith = property(_no_such_attribute)
-    expandtabs = property(_no_such_attribute)
-    find = property(_no_such_attribute)
-    format = property(_no_such_attribute)
-    format_map = property(_no_such_attribute)
-    index = property(_no_such_attribute)
-    isalnum = property(_no_such_attribute)
-    isalpha = property(_no_such_attribute)
-    isdecimal = property(_no_such_attribute)
-    isdigit = property(_no_such_attribute)
-    isidentifier = property(_no_such_attribute)
-    islower = property(_no_such_attribute)
-    isnumeric = property(_no_such_attribute)
-    isprintable = property(_no_such_attribute)
-    isspace = property(_no_such_attribute)
-    istitle = property(_no_such_attribute)
-    isupper = property(_no_such_attribute)
-    join = property(_no_such_attribute)
-    ljust = property(_no_such_attribute)
-    lower = property(_no_such_attribute)
-    lstrip = property(_no_such_attribute)
-    maketrans = property(_no_such_attribute)
-    partition = property(_no_such_attribute)
-    replace = property(_no_such_attribute)
-    rfind = property(_no_such_attribute)
-    rindex = property(_no_such_attribute)
-    rjust = property(_no_such_attribute)
-    rpartition = property(_no_such_attribute)
-    rsplit = property(_no_such_attribute)
-    rstrip = property(_no_such_attribute)
-    split = property(_no_such_attribute)
-    splitlines = property(_no_such_attribute)
-    startswith = property(_no_such_attribute)
-    strip = property(_no_such_attribute)
-    swapcase = property(_no_such_attribute)
-    title = property(_no_such_attribute)
-    translate = property(_no_such_attribute)
-    upper = property(_no_such_attribute)
-    zfill = property(_no_such_attribute)
+class PybarConstantContext:
+    def __init__(self, default):
+        self.default = default
+    def __getattribute__(self, name):
+        if name == 'default' or name.startswith('__'):
+            return object.__getattribute__(self, name)
+        return self
+    def __str__(self):
+        return str(self.default)
 
 class MustacheSubstitutionFail(Exception):
     pass
