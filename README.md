@@ -4,7 +4,7 @@ Requires a `java` interpreter installed.
 
 Support http://handlebarsjs.com only for the moment (tell me if you have other needs).
 
-The `--remove-mustaches` feature is currently pending on a bug fix: https://github.com/svenkreiss/html5validator/issues/27
+NOTE: The `--remove-mustaches` feature is currently buggy under Cygwin. A fix has been made that is pending release: https://github.com/svenkreiss/html5validator/issues/27
 
 ## Usage
 
