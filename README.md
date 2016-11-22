@@ -10,7 +10,7 @@ NOTE: The `--remove-mustaches` feature is currently buggy under Cygwin. A fix ha
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.0.2
+    sha: v1.0.3
     hooks:
     -   id: validate-html
 ```
@@ -19,7 +19,7 @@ Advanced usage:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.0.2
+    sha: v1.0.3
     hooks:
     -   id: validate-html
         args: [--remove-mustaches, --ignore='Expected \"<!DOCTYPE html>\"']
