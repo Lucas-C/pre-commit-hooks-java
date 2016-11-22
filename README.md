@@ -13,5 +13,15 @@ NOTE: The `--remove-mustaches` feature is currently buggy under Cygwin. A fix ha
     sha: v1.0.2
     hooks:
     -   id: validate-html
-        args: [--remove-mustaches]
+```
+
+Advanced usage:
+
+```
+-   repo: https://github.com/Lucas-C/pre-commit-hooks-html
+    sha: v1.0.2
+    hooks:
+    -   id: validate-html
+        args: [--remove-mustaches, --ignore='Expected \"<!DOCTYPE html>\"']
+        files: ^src/main/html/
 ```

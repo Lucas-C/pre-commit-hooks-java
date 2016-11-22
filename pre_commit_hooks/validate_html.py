@@ -38,14 +38,17 @@ def main(argv=None):
     parser.add_argument('--mustache-remover-default-value', default='DUMMY')
     args = parser.parse_args(argv)
 
+    if not args.filenames:
+        return 0
+
     validator = CustomHTMLValidator(mustache_remover_copy_ext=args.mustache_remover_copy_ext, mustache_remover_default_value=args.mustache_remover_default_value,
                                     directory=None, match=None, ignore=args.ignore, ignore_re=args.ignore_re)
-    sys.exit(validator.validate(
+    return validator.validate(
         args.filenames,
         errors_only=args.error_only,
         stack_size=args.stack_size,
         remove_mustaches=args.remove_mustaches,
-    ))
+    )
 
 
 class CustomHTMLValidator(Validator):

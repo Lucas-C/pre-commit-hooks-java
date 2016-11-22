@@ -1,8 +1,6 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import pytest
-
 from pre_commit_hooks.validate_html import main as validate_html
 
 
@@ -21,24 +19,14 @@ HTML_WITH_HANDLEBAR_TITLE = '''<!DOCTYPE html>
 def test_validate_html_ok(tmpdir, capsys):
     hbs_file = tmpdir.join('test.hbs')
     hbs_file.write(HTML_WITH_HANDLEBAR_TITLE)
-    with pytest.raises(SystemExit):
-        try:
-            validate_html(['--remove-mustaches', hbs_file.strpath])
-        except SystemExit as error:
-            _, stderr = capsys.readouterr()
-            assert stderr == ''
-            assert error.code == 0
-            raise
+    assert validate_html(['--remove-mustaches', hbs_file.strpath]) == 0
+    _, stderr = capsys.readouterr()
+    assert stderr == ''
 
 
 def test_validate_html_ko(tmpdir, capsys):
     html_file = tmpdir.join('test.hbs')
     html_file.write(HTML_WITH_HANDLEBAR_TITLE)
-    with pytest.raises(SystemExit):
-        try:
-            validate_html([html_file.strpath])
-        except SystemExit as error:
-            _, stderr = capsys.readouterr()
-            assert stderr.endswith('attribute "src" on element "img": Illegal character in path segment: "{" is not allowed.\n')
-            assert error.code == 1
-            raise
+    assert validate_html([html_file.strpath]) == 1
+    _, stderr = capsys.readouterr()
+    assert stderr.endswith('attribute "src" on element "img": Illegal character in path segment: "{" is not allowed.\n')
