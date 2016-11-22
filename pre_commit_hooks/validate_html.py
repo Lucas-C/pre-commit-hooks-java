@@ -9,30 +9,16 @@ def main(argv=None):
     parser.add_argument('filenames', nargs='*', help='filenames to check')
     parser.add_argument('--show-warnings', dest='error_only',
                         action='store_false', default=True)
-    parser.add_argument('--ignore', nargs='*', default=None,
-                        type=lambda s: (s.decode('utf-8')
-                                        if isinstance(s, bytes) else s),
+    parser.add_argument('--ignore', action='append',
                         help='ignore messages containing the given strings')
-    parser.add_argument('--ignore-re', nargs='*', default=None,
-                        type=lambda s: (s.decode('utf-8')
-                                        if isinstance(s, bytes) else s),
-                        dest='ignore_re',
+    parser.add_argument('--ignore-re', action='append',
                         help='regular expression of messages to ignore')
-    parser.add_argument('-l', action='store_const', const=2048,
-                        dest='stack_size',
-                        help=('run on larger files: sets Java '
-                              'stack size to 2048k')
-                        )
-    parser.add_argument('-ll', action='store_const', const=8192,
-                        dest='stack_size',
-                        help=('run on larger files: sets Java '
-                              'stack size to 8192k')
-                        )
-    parser.add_argument('-lll', action='store_const', const=32768,
-                        dest='stack_size',
-                        help=('run on larger files: sets Java '
-                              'stack size to 32768k')
-                        )
+    parser.add_argument('-l', action='store_const', dest='stack_size', const=2048,
+                        help='run on larger files: sets Java stack size to 2048k')
+    parser.add_argument('-ll', action='store_const', dest='stack_size', const=8192,
+                        help='run on larger files: sets Java stack size to 8192k')
+    parser.add_argument('-lll', action='store_const', dest='stack_size', const=32768,
+                        help='run on larger files: sets Java stack size to 32768k')
     parser.add_argument('--remove-mustaches', action='store_true', default=False)
     parser.add_argument('--mustache-remover-copy-ext', default='~~')
     parser.add_argument('--mustache-remover-default-value', default='DUMMY')
