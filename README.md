@@ -1,8 +1,10 @@
-A pre-commit hook to validate like http://validator.w3.org/nu/
+A pre-commit hook to validate HTML5 pages or templates.
+It uses the v.Nu validator behind http://validator.w3.org/nu/.
 
-Requires a `java` interpreter installed.
+This hook requires a `java` interpreter in the `$PATH`.
 
-Support http://handlebarsjs.com only for the moment (tell me if you have other needs).
+This hook can automagically replace mustaches by a default value in order to validate templates.
+Currently, only http://handlebarsjs.com templates are supported for the moment (create an issue if you have other needs !).
 
 NOTE: The `--remove-mustaches` feature is currently buggy under Cygwin. A fix has been made that is pending release: https://github.com/svenkreiss/html5validator/issues/27
 
@@ -25,3 +27,7 @@ Advanced usage:
         args: [--remove-mustaches, "--ignore=Expected \"<!DOCTYPE html>\""]
         files: ^src/main/html/
 ```
+
+## [FR] Accessibilité RGAA
+
+Comme ce hook de pre-commit git utilise v.Nu, il permet de valider le critère RGAA3 **1.1 [A] "Chaque image a-t-elle une alternative textuelle ?"** [en employant le validateur HTML5 recommandé par la norme](http://disic.github.io/rgaa_methodologie/).
