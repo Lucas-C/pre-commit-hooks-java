@@ -6,8 +6,6 @@ This hook requires a `java` interpreter in the `$PATH`.
 This hook can automagically replace mustaches by a default value in order to validate templates.
 Currently, only http://handlebarsjs.com templates are supported for the moment (create an issue if you have other needs !).
 
-NOTE: The `--remove-mustaches` feature is currently buggy under Cygwin. A fix has been made that is pending release: https://github.com/svenkreiss/html5validator/issues/27
-
 ## Usage
 
 ```
