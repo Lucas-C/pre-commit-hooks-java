@@ -29,3 +29,10 @@ Advanced usage:
 ## [FR] Accessibilité RGAA
 
 Comme ce hook de pre-commit git utilise v.Nu, il permet de valider le critère RGAA3 **1.1 [A] "Chaque image a-t-elle une alternative textuelle ?"** [en employant le validateur HTML5 recommandé par la norme](http://disic.github.io/rgaa_methodologie/).
+
+
+## Alternatives
+
+- [HTMLHint](http://htmlhint.com) : NodeJS, KISS, implemented with regexps
+- [htmllint](https://github.com/htmllint/htmllint/wiki/Options) : NodeJS, based on [htmlparser2](https://github.com/fb55/htmlparser2)
+- [HTML Tidy](http://www.html-tidy.org) : C
