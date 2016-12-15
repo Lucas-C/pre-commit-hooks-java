@@ -4,11 +4,11 @@ Pre-commit hooks to validate HTML5 pages or templates:
 
 - another one used a [htmlparser2](https://github.com/fb55/htmlparser2)-based NodeJS linter: [htmllint](https://github.com/htmllint/htmllint/wiki/Options)
 
-- the last one uses the v.Nu validator: http://validator.w3.org/nu/
+- the last one uses the v.Nu validator: http://validator.w3.org/nu/.
 It requires a `java` interpreter in the `$PATH`.
 
-This hook can automagically replace mustaches by a default value in order to validate templates.
-Currently, only http://handlebarsjs.com templates are supported for the moment (create an issue if you have other needs !).
+This last hook can automagically replace mustaches by a default value in order to validate templates.
+Currently, only [handlebars](http://handlebarsjs.com) templates are supported. Please create an issue if you need support for other template engines: the ones where a Python implementation exist should be easy to add.
 
 ## Usage
 
@@ -51,4 +51,4 @@ Comme ce hook de pre-commit git utilise v.Nu, il permet de valider le critère R
 
 ## Alternatives
 
-- [HTML Tidy](http://www.html-tidy.org) : C
+- [HTML Tidy](http://www.html-tidy.org) : implemented in C
