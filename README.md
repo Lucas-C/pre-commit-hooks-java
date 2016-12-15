@@ -14,7 +14,7 @@ For `htmlhint`:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.0.5
+    sha: v1.0.4
     hooks:
     -   id: htmlhint
 ```
@@ -23,7 +23,7 @@ For the W3C v.Nu validator:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.0.5
+    sha: v1.0.4
     hooks:
     -   id: validate-html
 ```
@@ -32,7 +32,7 @@ Advanced usage:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.0.5
+    sha: v1.0.4
     hooks:
     -   id: validate-html
         args: [--remove-mustaches, "--ignore=Expected \"<!DOCTYPE html>\""]
