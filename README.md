@@ -1,8 +1,10 @@
 Pre-commit hooks to validate HTML5 pages or templates:
 
-- on hook uses a NodeJS linter: https://github.com/yaniswang/HTMLHint
+- one hook uses a regex-based NodeJS linter: https://github.com/yaniswang/HTMLHint
 
-- the other one uses the v.Nu validator: http://validator.w3.org/nu/
+- another one used a [htmlparser2](https://github.com/fb55/htmlparser2)-based NodeJS linter: [htmllint](https://github.com/htmllint/htmllint/wiki/Options)
+
+- the last one uses the v.Nu validator: http://validator.w3.org/nu/
 It requires a `java` interpreter in the `$PATH`.
 
 This hook can automagically replace mustaches by a default value in order to validate templates.
@@ -10,13 +12,16 @@ Currently, only http://handlebarsjs.com templates are supported for the moment (
 
 ## Usage
 
-For `htmlhint`:
+For `htmlhint` & `htmllint`:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
     sha: v1.0.4
     hooks:
     -   id: htmlhint
+        # optional custom config:
+        args: [--config, .htmlhintrc]
+    -   id: htmllint
 ```
 
 For the W3C v.Nu validator:
