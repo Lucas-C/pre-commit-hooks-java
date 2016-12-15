@@ -12,7 +12,7 @@ Currently, only http://handlebarsjs.com templates are supported for the moment (
 
 ## Usage
 
-For `htmlhint` & `htmllint`:
+For `htmlhint` & `htmllint` (this one require you to have a config file like [this default `.htmllintrc`](https://github.com/htmllint/htmllint-cli/blob/master/lib/default_cfg.json)) :
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
