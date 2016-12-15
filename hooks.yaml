@@ -9,3 +9,9 @@
     language: node
     files: .*\.(html|hbs)$
     additional_dependencies: ['htmlhint']
+-   id: htmllint
+    name: NodeJS HTML syntax linter
+    entry: htmlhint
+    language: node
+    files: .*\.(html|hbs)$
+    additional_dependencies: ['htmllint']

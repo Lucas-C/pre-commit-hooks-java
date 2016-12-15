@@ -46,6 +46,4 @@ Comme ce hook de pre-commit git utilise v.Nu, il permet de valider le critère R
 
 ## Alternatives
 
-- [HTMLHint](http://htmlhint.com) : NodeJS, KISS, implemented with regexps
-- [htmllint](https://github.com/htmllint/htmllint/wiki/Options) : NodeJS, based on [htmlparser2](https://github.com/fb55/htmlparser2)
 - [HTML Tidy](http://www.html-tidy.org) : C
