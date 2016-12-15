@@ -1,16 +1,29 @@
-A pre-commit hook to validate HTML5 pages or templates.
-It uses the v.Nu validator behind http://validator.w3.org/nu/.
+Pre-commit hooks to validate HTML5 pages or templates:
 
-This hook requires a `java` interpreter in the `$PATH`.
+- on hook uses a NodeJS linter: https://github.com/yaniswang/HTMLHint
+
+- the other one uses the v.Nu validator: http://validator.w3.org/nu/
+It requires a `java` interpreter in the `$PATH`.
 
 This hook can automagically replace mustaches by a default value in order to validate templates.
 Currently, only http://handlebarsjs.com templates are supported for the moment (create an issue if you have other needs !).
 
 ## Usage
 
+For `htmlhint`:
+
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.0.4
+    sha: v1.0.5
+    hooks:
+    -   id: htmlhint
+```
+
+For the W3C v.Nu validator:
+
+```
+-   repo: https://github.com/Lucas-C/pre-commit-hooks-html
+    sha: v1.0.5
     hooks:
     -   id: validate-html
 ```
@@ -19,7 +32,7 @@ Advanced usage:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.0.4
+    sha: v1.0.5
     hooks:
     -   id: validate-html
         args: [--remove-mustaches, "--ignore=Expected \"<!DOCTYPE html>\""]

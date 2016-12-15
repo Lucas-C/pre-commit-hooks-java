@@ -3,3 +3,9 @@
     entry: validate_html
     language: python
     files: .*\.(html|hbs)$
+-   id: htmlhint
+    name: NodeJS HTML syntax linter
+    entry: htmlhint
+    language: node
+    files: .*\.(html|hbs)$
+    additional_dependencies: ['htmlhint']
