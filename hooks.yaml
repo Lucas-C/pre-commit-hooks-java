@@ -14,4 +14,4 @@
     entry: htmllint
     language: node
     files: .*\.(html|hbs)$
-    additional_dependencies: ['htmllint']
+    additional_dependencies: ['htmllint-cli']
