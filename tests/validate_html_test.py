@@ -16,17 +16,15 @@ HTML_WITH_HANDLEBAR_TITLE = '''<!DOCTYPE html>
 </html>'''
 
 
-def test_validate_html_ok(tmpdir, capsys):
+def test_validate_html_ok(tmpdir, caplog):
     hbs_file = tmpdir.join('test.hbs')
     hbs_file.write(HTML_WITH_HANDLEBAR_TITLE)
     assert validate_html(['--remove-mustaches', hbs_file.strpath]) == 0
-    _, stderr = capsys.readouterr()
-    assert stderr == ''
+    assert 'All good.' in caplog.text
 
 
-def test_validate_html_ko(tmpdir, capsys):
+def test_validate_html_ko(tmpdir, caplog):
     html_file = tmpdir.join('test.hbs')
     html_file.write(HTML_WITH_HANDLEBAR_TITLE)
     assert validate_html([html_file.strpath]) == 1
-    _, stderr = capsys.readouterr()
-    assert stderr.endswith('attribute "src" on element "img": Illegal character in path segment: "{" is not allowed.\n')
+    assert 'attribute "src" on element "img": Illegal character in path segment: "{" is not allowed.' in caplog.text

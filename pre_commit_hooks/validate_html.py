@@ -1,5 +1,6 @@
 from __future__ import print_function
-import argparse, contextlib, os, shutil, sys
+import argparse, contextlib, logging, os, shutil, sys
+from six import raise_from, text_type
 from pybars import Compiler as PybarCompiler, PybarsError
 from html5validator.validator import Validator
 
@@ -22,10 +23,15 @@ def main(argv=None):
     parser.add_argument('--remove-mustaches', action='store_true', default=False)
     parser.add_argument('--mustache-remover-copy-ext', default='~~')
     parser.add_argument('--mustache-remover-default-value', default='DUMMY')
+    parser.add_argument('--log', default='WARNING',
+                        help=('log level: DEBUG, INFO or WARNING '
+                              '(default: WARNING)'))
     args = parser.parse_args(argv)
 
     if not args.filenames:
         return 0
+
+    logging.basicConfig(level=getattr(logging, args.log))
 
     validator = CustomHTMLValidator(mustache_remover_copy_ext=args.mustache_remover_copy_ext, mustache_remover_default_value=args.mustache_remover_default_value,
                                     directory=None, match=None, ignore=args.ignore, ignore_re=args.ignore_re)
@@ -40,7 +46,7 @@ def main(argv=None):
 class CustomHTMLValidator(Validator):
 
     def __init__(self, mustache_remover_copy_ext, mustache_remover_default_value, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(CustomHTMLValidator, self).__init__(*args, **kwargs)
         self.mustache_remover_copy_ext = mustache_remover_copy_ext
         self.mustache_remover_default_value = mustache_remover_default_value
 
@@ -49,9 +55,9 @@ class CustomHTMLValidator(Validator):
             files = self.all_files()
         if remove_mustaches:
             with generate_mustachefree_tmpfiles(files, copy_ext=self.mustache_remover_copy_ext, default_value=self.mustache_remover_default_value) as files:
-                return super().validate(files, **kwargs)
+                return super(CustomHTMLValidator, self).validate(files, **kwargs)
         else:
-            return super().validate(files, **kwargs)
+            return super(CustomHTMLValidator, self).validate(files, **kwargs)
 
 @contextlib.contextmanager
 def generate_mustachefree_tmpfiles(filepaths, copy_ext, default_value):
@@ -64,10 +70,10 @@ def generate_mustachefree_tmpfiles(filepaths, copy_ext, default_value):
         with open(filepath, 'r') as src_file:
             template_content = src_file.read()
             try:
-                compiled_template = tmplt_compiler.compile(template_content)
+                compiled_template = tmplt_compiler.compile(text_type(template_content))
                 code_without_mustaches = compiled_template(PybarConstantContext(default_value))
             except PybarsError as error:
-                raise MustacheSubstitutionFail('For HTML template file {}'.format(filepath)) from error
+                raise_from(MustacheSubstitutionFail('For HTML template file {}'.format(filepath)), error)
             with open(tmpfile, 'w+') as new_tmpfile:
                 new_tmpfile.write(code_without_mustaches)
         mustachefree_tmpfiles.append(tmpfile)

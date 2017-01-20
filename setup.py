@@ -27,6 +27,7 @@ setup(
     install_requires=[
         'html5validator',
         'pybars3',
+        'six',
     ],
     entry_points={
         'console_scripts': [
