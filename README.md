@@ -1,3 +1,5 @@
+[![](https://travis-ci.org/Lucas-C/pre-commit-hooks-html.svg?branch=master)](https://travis-ci.org/Lucas-C/pre-commit-hooks-html)
+
 Pre-commit hooks to validate HTML5 pages or templates:
 
 - one hook uses a regex-based NodeJS linter: https://github.com/yaniswang/HTMLHint
