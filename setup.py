@@ -5,7 +5,7 @@ setup(
     name='pre-commit-hooks',
     description='A pre-commit hook to validate your HTML files / templates against the W3C v.Nu checker',
     url='https://github.com/Lucas-C/pre-commit-hooks-html',
-    version='1.1.0',
+    version='1.2.0',
 
     author='Lucas Cimon',
     author_email='lucas.cimon@gmail.com',
