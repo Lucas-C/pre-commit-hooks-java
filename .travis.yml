@@ -2,6 +2,6 @@ language: java
 jdk:
   - oraclejdk8
 install:
-  - pip install .
-  - pip install -r dev-requirements.txt
+  - pip install --user .
+  - pip install --user -r dev-requirements.txt
 script: pre-commit install && pre-commit run --all-files
