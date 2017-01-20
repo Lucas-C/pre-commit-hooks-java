@@ -4,3 +4,7 @@ jdk:
 script:
   - python --version
   - pip --version
+  - python3 --version
+  - pip3 --version
+  - type -a python
+  - type -a pip
