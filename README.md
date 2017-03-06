@@ -50,6 +50,7 @@ Advanced usage:
 
 Comme ce hook de pre-commit git utilise v.Nu, il permet de valider le critère RGAA3 **1.1 [A] "Chaque image a-t-elle une alternative textuelle ?"** [en employant le validateur HTML5 recommandé par la norme](http://disic.github.io/rgaa_methodologie/).
 
+Si vous souhaitez effectuer d'autres validations automatiques de critères d'accessibilité, jetez un oeil à [WCAG-Zoo](https://wcag-zoo.readthedocs.io)
 
 ## Alternatives
 
