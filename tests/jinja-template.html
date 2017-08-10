@@ -1,0 +1,12 @@
+{% extends "jinja-base.html" %}
+{% block title %}Jinja test{% endblock %}
+{% block content %}
+{{ x }}
+{{ 'hardcoded' }}
+{{ 'X'.join(article.content.split(' ')[:75])|striptags|striptags }}
+{% if dummy %}NOT DISPLAYED{% endif %}
+{% set bullet = joiner(" &bullet; ") %}
+{% for truc in machin %}{{bullet()}}NOT DISPLAYED{% endfor %}
+main template stuff
+{% include "jinja-partial.html" %}
+{% endblock %}

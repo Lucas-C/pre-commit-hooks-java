@@ -26,6 +26,7 @@ setup(
     packages=find_packages('.'),
     install_requires=[
         'html5validator',
+        'jinja2',
         'pybars3',
         'six',
     ],

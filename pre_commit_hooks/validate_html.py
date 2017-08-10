@@ -56,7 +56,7 @@ def main(argv=None):
 class CustomHTMLValidator(Validator):
 
     def __init__(self, mustache_remover_name, mustache_remover_copy_ext, mustache_remover_default_value, templates_include_dir, *args, **kwargs):
-        super(CustomHTMLValidator, self).__init__(*args, **kwargs)
+        Validator.__init__(self, *args, **kwargs)
         self.mustache_remover_copy_ext = mustache_remover_copy_ext
         self.mustache_remover_default_value = mustache_remover_default_value
         self.mustache_remover = Jinja2MustacheRemover(templates_include_dir) if mustache_remover_name == 'jinja2' else PybarMustacheRemover()
@@ -68,10 +68,10 @@ class CustomHTMLValidator(Validator):
             with generate_mustachefree_tmpfiles(files,
                                                 self.mustache_remover,
                                                 copy_ext=self.mustache_remover_copy_ext,
-                                                default_value=self.mustache_remover_default_value) as files:
-                return super(CustomHTMLValidator, self).validate(files, **kwargs)
+                                                default_value=self.mustache_remover_default_value) as tmpfiles:
+                return Validator.validate(self, tmpfiles, **kwargs)
         else:
-            return super(CustomHTMLValidator, self).validate(files, **kwargs)
+            return Validator.validate(self, files, **kwargs)
 
 @contextlib.contextmanager
 def generate_mustachefree_tmpfiles(filepaths, mustache_remover, copy_ext, default_value):
@@ -109,7 +109,7 @@ class PybarPlaceholderContext:
         self.default = default
     def __getattribute__(self, name):
         if name == 'default' or name.startswith('__'):
-            return super().__getattribute__(name)
+            return object.__getattribute__(self, name)
         return self
     def __str__(self):
         return str(self.default)
@@ -126,20 +126,20 @@ class Jinja2MustacheRemover:
 
 class Jinja2PlaceholderEnvironment(Environment):
     def __init__(self, default, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        Environment.__init__(self, *args, **kwargs)
         self.default = default
-    def getattr(self, obj, attribute):
+    def getattr(self, *_, **__):
         return str(self.default)
-    def call_filter(self, *args, **kwargs):
+    def call_filter(self, *_, **__):
         return str(self.default)
 
 class Jinja2PlaceholderContext(Context):
     def __init__(self, default, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        Context.__init__(self, *args, **kwargs)
         self.default = default
-    def get(key, default=None):
+    def get(self, *_, **__):
         return str(self.default)
-    def call(self, __obj, *args, **kwargs):
+    def call(self, __obj, *_, **__):
         return str(self.default)
 
 

@@ -46,6 +46,16 @@ Advanced usage:
         files: ^src/main/html/
 ```
 
+With Jinja templates:
+
+```
+-   repo: https://github.com/Lucas-C/pre-commit-hooks-html
+    sha: v1.3.0
+    hooks:
+    -   id: validate-html
+        args: [--remove-mustaches, --mustache-remover=jinja2]
+```
+
 ## [FR] Accessibilité RGAA
 
 Comme ce hook de pre-commit git utilise v.Nu, il permet de valider le critère RGAA3 **1.1 [A] "Chaque image a-t-elle une alternative textuelle ?"** [en employant le validateur HTML5 recommandé par la norme](http://disic.github.io/rgaa_methodologie/).
