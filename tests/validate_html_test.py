@@ -15,11 +15,30 @@ HTML_WITH_HANDLEBAR_TITLE = '''<!DOCTYPE html>
 </body>
 </html>'''
 
+JINJA_TEMPLATE = '''
+{% extends "base.html" %}
+{% block title %}Search results{% endblock %}
+{% set bullet = joiner(" &bullet; ") %}
+{% for truc in machin %}
+    {{bullet()}}
+    {% if dummy %}
+        {{ ' '.join(article.content.split(' ')[:75])|striptags|striptags }}
+    {% endif %}
+{% endfor %}
+{% include "partial.html" %}
+'''
 
-def test_validate_html_ok(tmpdir, caplog):
+
+def test_validate_pybar_ok(tmpdir, caplog):
     hbs_file = tmpdir.join('test.hbs')
     hbs_file.write(HTML_WITH_HANDLEBAR_TITLE)
     assert validate_html(['--remove-mustaches', hbs_file.strpath]) == 0
+    assert 'All good.' in caplog.text
+
+def test_validate_jinja2_ok(tmpdir, caplog):
+    hbs_file = tmpdir.join('test.hbs')
+    hbs_file.write(JINJA_TEMPLATE)
+    assert validate_html(['--remove-mustaches', '--mustache-remover=jinja2', '--templates-include-dir=tests', hbs_file.strpath]) == 0
     assert 'All good.' in caplog.text
 
 
