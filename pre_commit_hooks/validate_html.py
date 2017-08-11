@@ -102,7 +102,7 @@ class PybarMustacheRemover:
             compiled_template = self.tmplt_compiler.compile(template_content)
             return compiled_template(PybarPlaceholderContext(default_value))
         except PybarsError as error:
-            raise_from(MustacheSubstitutionFail('For HTML template file {}'.format(filepath)), error)
+            raise_from(MustacheSubstitutionFail('For HTML template file {}: {}'.format(filepath, error)), error)
 
 class PybarPlaceholderContext:
     def __init__(self, default):
