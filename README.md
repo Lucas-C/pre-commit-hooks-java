@@ -18,7 +18,7 @@ For `htmlhint` & `htmllint` (this one require you to have a config file like [th
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.2.1
+    sha: v1.3.1
     hooks:
     -   id: htmlhint
         # optional custom config:
@@ -30,7 +30,7 @@ For the W3C v.Nu validator:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.2.1
+    sha: v1.3.1
     hooks:
     -   id: validate-html
 ```
@@ -39,7 +39,7 @@ Advanced usage:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.2.1
+    sha: v1.3.1
     hooks:
     -   id: validate-html
         args: [--remove-mustaches, "--ignore=Expected \"<!DOCTYPE html>\""]
@@ -50,7 +50,7 @@ With Jinja templates:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-html
-    sha: v1.3.0
+    sha: v1.3.1
     hooks:
     -   id: validate-html
         args: [--remove-mustaches, --mustache-remover=jinja2]
