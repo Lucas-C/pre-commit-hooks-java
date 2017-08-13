@@ -100,19 +100,23 @@ class PybarMustacheRemover:
             template_content = text_type(src_file.read())
         try:
             compiled_template = self.tmplt_compiler.compile(template_content)
-            return compiled_template(PybarPlaceholderContext(default_value))
+            return compiled_template(RecursiveDefaultPlaceholder(default_value))
         except PybarsError as error:
             raise_from(MustacheSubstitutionFail('For HTML template file {}: {}'.format(filepath, error)), error)
 
-class PybarPlaceholderContext:
+class RecursiveDefaultPlaceholder:
     def __init__(self, default):
         self.default = default
+    def __str__(self):
+        return str(self.default)
     def __getattribute__(self, name):
         if name == 'default' or name.startswith('__'):
             return object.__getattribute__(self, name)
         return self
-    def __str__(self):
-        return str(self.default)
+    def __iter__(self):
+        return iter([self, self])
+    def __getitem__(self, _):
+        return self
 
 
 class Jinja2MustacheRemover:
@@ -129,16 +133,16 @@ class Jinja2PlaceholderEnvironment(Environment):
         Environment.__init__(self, *args, **kwargs)
         self.default = default
     def getattr(self, *_, **__):
-        return str(self.default)
+        return RecursiveDefaultPlaceholder(self.default)
 
 class Jinja2PlaceholderContext(Context):
     def __init__(self, default, *args, **kwargs):
         Context.__init__(self, *args, **kwargs)
         self.default = default
     def call(self, *_, **__):
-        return str(self.default)
+        return RecursiveDefaultPlaceholder(self.default)
     def resolve_or_missing(self, *_, **__):
-        return str(self.default)
+        return RecursiveDefaultPlaceholder(self.default)
 
 
 class MustacheSubstitutionFail(Exception):

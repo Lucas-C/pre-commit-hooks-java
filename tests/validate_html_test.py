@@ -21,12 +21,12 @@ def test_jinja2mustacheremover():
 Jinja test
 
 DUMMY
-UMMY
+DUMMY
 hardcoded
 DUMMY
 CONDITIONAL
 
-DUMMY-iterstep-DUMMY-iterstep-DUMMY-iterstep-DUMMY-iterstep-DUMMY-iterstep-
+DUMMY-iterstep-DUMMY-iterstep-
 main template stuff
 partial.html content
 '''
