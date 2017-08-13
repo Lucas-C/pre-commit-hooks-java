@@ -26,6 +26,7 @@ def main(argv=None):
                         help='run on larger files: sets Java stack size to 32768k')
     parser.add_argument('--remove-mustaches', action='store_true', default=False)
     parser.add_argument('--mustache-remover', choices=('pybar', 'jinja2'), default='pybar')
+    parser.add_argument('--mustache-remover-env', action='append', nargs=2, help='Predefined KEY VALUE pair to substitute in the template')
     parser.add_argument('--mustache-remover-copy-ext', default='~~')
     parser.add_argument('--mustache-remover-default-value', default='DUMMY')
     parser.add_argument('--templates-include-dir', help='Required for Jinja2 templates that use the `include` directive'
@@ -40,9 +41,10 @@ def main(argv=None):
 
     logging.basicConfig(level=getattr(logging, args.log))
 
+    placeholder = Placeholder(args.mustache_remover_default_value, args.mustache_remover_env)
     validator = CustomHTMLValidator(mustache_remover_name=args.mustache_remover,
                                     mustache_remover_copy_ext=args.mustache_remover_copy_ext,
-                                    mustache_remover_default_value=args.mustache_remover_default_value,
+                                    mustache_remover_placeholder=placeholder,
                                     templates_include_dir=args.templates_include_dir,
                                     directory=None, match=None, ignore=args.ignore, ignore_re=args.ignore_re)
     return validator.validate(
@@ -53,12 +55,19 @@ def main(argv=None):
     )
 
 
+class Placeholder:
+    def __init__(self, default_value, env=None):
+        self.default_value = default_value
+        self.env = {k: eval(v) for k, v in env or ()}
+
+
+
 class CustomHTMLValidator(Validator):
 
-    def __init__(self, mustache_remover_name, mustache_remover_copy_ext, mustache_remover_default_value, templates_include_dir, *args, **kwargs):
+    def __init__(self, mustache_remover_name, mustache_remover_copy_ext, mustache_remover_placeholder, templates_include_dir, *args, **kwargs):
         Validator.__init__(self, *args, **kwargs)
         self.mustache_remover_copy_ext = mustache_remover_copy_ext
-        self.mustache_remover_default_value = mustache_remover_default_value
+        self.mustache_remover_placeholder = mustache_remover_placeholder
         self.mustache_remover = Jinja2MustacheRemover(templates_include_dir) if mustache_remover_name == 'jinja2' else PybarMustacheRemover()
 
     def validate(self, files=None, remove_mustaches=False, **kwargs):
@@ -68,19 +77,19 @@ class CustomHTMLValidator(Validator):
             with generate_mustachefree_tmpfiles(files,
                                                 self.mustache_remover,
                                                 copy_ext=self.mustache_remover_copy_ext,
-                                                default_value=self.mustache_remover_default_value) as tmpfiles:
+                                                placeholder=self.mustache_remover_placeholder) as tmpfiles:
                 return Validator.validate(self, tmpfiles, **kwargs)
         else:
             return Validator.validate(self, files, **kwargs)
 
 @contextlib.contextmanager
-def generate_mustachefree_tmpfiles(filepaths, mustache_remover, copy_ext, default_value):
+def generate_mustachefree_tmpfiles(filepaths, mustache_remover, copy_ext, placeholder):
     mustachefree_tmpfiles = []
 
     for filepath in filepaths:
         tmpfile = filepath + copy_ext
         shutil.copyfile(filepath, tmpfile)
-        code_without_mustaches = mustache_remover.clean_template(filepath, default_value)
+        code_without_mustaches = mustache_remover.clean_template(filepath, placeholder)
         with open(tmpfile, 'w+') as new_tmpfile:
             new_tmpfile.write(code_without_mustaches)
         mustachefree_tmpfiles.append(tmpfile)
@@ -95,14 +104,51 @@ def generate_mustachefree_tmpfiles(filepaths, mustache_remover, copy_ext, defaul
 class PybarMustacheRemover:
     def __init__(self):
         self.tmplt_compiler = PybarCompiler()
-    def clean_template(self, filepath, default_value):
+    def clean_template(self, filepath, placeholder):
         with open(filepath, 'r') as src_file:
             template_content = text_type(src_file.read())
         try:
             compiled_template = self.tmplt_compiler.compile(template_content)
-            return compiled_template(RecursiveDefaultPlaceholder(default_value))
+            return compiled_template(PybarPlaceholderContext(placeholder))
         except PybarsError as error:
             raise_from(MustacheSubstitutionFail('For HTML template file {}: {}'.format(filepath, error)), error)
+
+class PybarPlaceholderContext:
+    def __init__(self, placeholder):
+        self.placeholder = placeholder
+    def get(self, segment):
+        if segment in self.placeholder.env:
+            return self.placeholder.env[segment]
+        return RecursiveDefaultPlaceholder(self.placeholder.default_value)
+
+
+class Jinja2MustacheRemover:
+    def __init__(self, templates_include_dir):
+        self.template_loader_extra_paths = [templates_include_dir] if templates_include_dir else []
+    def clean_template(self, filepath, placeholder):
+        env = Jinja2PlaceholderEnvironment(placeholder, loader=FileSystemLoader([os.path.dirname(filepath)] + self.template_loader_extra_paths))
+        template = env.get_template(os.path.basename(filepath))
+        context = Jinja2PlaceholderContext(placeholder, env, DEFAULT_NAMESPACE.copy(), template.name, template.blocks)
+        return concat(template.root_render_func(context))
+
+class Jinja2PlaceholderEnvironment(Environment):
+    def __init__(self, placeholder, *args, **kwargs):
+        Environment.__init__(self, *args, **kwargs)
+        self.placeholder = placeholder
+    def getattr(self, *_, **__):
+        return RecursiveDefaultPlaceholder(self.placeholder.default_value)
+
+class Jinja2PlaceholderContext(Context):
+    def __init__(self, placeholder, *args, **kwargs):
+        Context.__init__(self, *args, **kwargs)
+        self.placeholder = placeholder
+    def call(self, *_, **__):
+        return RecursiveDefaultPlaceholder(self.placeholder.default_value)
+    def resolve_or_missing(self, key, missing=None):
+        if key in self.placeholder.env:
+            return self.placeholder.env[key]
+        return RecursiveDefaultPlaceholder(self.placeholder.default_value)
+
 
 class RecursiveDefaultPlaceholder:
     def __init__(self, default):
@@ -117,32 +163,6 @@ class RecursiveDefaultPlaceholder:
         return iter([self, self])
     def __getitem__(self, _):
         return self
-
-
-class Jinja2MustacheRemover:
-    def __init__(self, templates_include_dir):
-        self.template_loader_extra_paths = [templates_include_dir] if templates_include_dir else []
-    def clean_template(self, filepath, default_value):
-        env = Jinja2PlaceholderEnvironment(default_value, loader=FileSystemLoader([os.path.dirname(filepath)] + self.template_loader_extra_paths))
-        template = env.get_template(os.path.basename(filepath))
-        context = Jinja2PlaceholderContext(default_value, env, DEFAULT_NAMESPACE.copy(), template.name, template.blocks)
-        return concat(template.root_render_func(context))
-
-class Jinja2PlaceholderEnvironment(Environment):
-    def __init__(self, default, *args, **kwargs):
-        Environment.__init__(self, *args, **kwargs)
-        self.default = default
-    def getattr(self, *_, **__):
-        return RecursiveDefaultPlaceholder(self.default)
-
-class Jinja2PlaceholderContext(Context):
-    def __init__(self, default, *args, **kwargs):
-        Context.__init__(self, *args, **kwargs)
-        self.default = default
-    def call(self, *_, **__):
-        return RecursiveDefaultPlaceholder(self.default)
-    def resolve_or_missing(self, *_, **__):
-        return RecursiveDefaultPlaceholder(self.default)
 
 
 class MustacheSubstitutionFail(Exception):
