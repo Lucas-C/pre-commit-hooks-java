@@ -2,11 +2,12 @@
 {% block title %}Jinja test{% endblock %}
 {% block content %}
 {{ x }}
+{{ x[1:] }}
 {{ 'hardcoded' }}
 {{ 'X'.join(article.content.split(' ')[:75])|striptags|striptags }}
-{% if dummy %}NOT DISPLAYED{% endif %}
+{% if dummy %}CONDITIONAL{% endif %}
 {% set bullet = joiner(" &bullet; ") %}
-{% for truc in machin %}{{bullet()}}NOT DISPLAYED{% endfor %}
+{% for truc in machin %}{{bullet()}}-iterstep-{% endfor %}
 main template stuff
 {% include "jinja-partial.html" %}
 {% endblock %}

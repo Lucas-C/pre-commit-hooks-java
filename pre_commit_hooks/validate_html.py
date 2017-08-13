@@ -130,16 +130,14 @@ class Jinja2PlaceholderEnvironment(Environment):
         self.default = default
     def getattr(self, *_, **__):
         return str(self.default)
-    def call_filter(self, *_, **__):
-        return str(self.default)
 
 class Jinja2PlaceholderContext(Context):
     def __init__(self, default, *args, **kwargs):
         Context.__init__(self, *args, **kwargs)
         self.default = default
-    def get(self, *_, **__):
+    def call(self, *_, **__):
         return str(self.default)
-    def call(self, __obj, *_, **__):
+    def resolve_or_missing(self, *_, **__):
         return str(self.default)
 
 

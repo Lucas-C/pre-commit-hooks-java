@@ -20,12 +20,13 @@ def test_jinja2mustacheremover():
     assert Jinja2MustacheRemover('tests').clean_template('tests/jinja-template.html', 'DUMMY') == '''base.html content
 Jinja test
 
-
+DUMMY
+UMMY
 hardcoded
 DUMMY
+CONDITIONAL
 
-
-
+DUMMY-iterstep-DUMMY-iterstep-DUMMY-iterstep-DUMMY-iterstep-DUMMY-iterstep-
 main template stuff
 partial.html content
 '''
@@ -37,7 +38,7 @@ def test_validate_pybar_ok(tmpdir, caplog):
     assert validate_html(['--remove-mustaches', hbs_file.strpath]) == 0
     assert 'All good.' in caplog.text
 
-def test_validate_jinja2_ok(caplog):
+def test_validate_jinja2_errors(caplog):
     assert validate_html(['--remove-mustaches',
                           '--mustache-remover=jinja2',
                           '--templates-include-dir=tests',
@@ -47,7 +48,7 @@ def test_validate_jinja2_ok(caplog):
     assert 'Element "head" is missing a required instance of child element "title"' in errors[1]
 
 
-def test_validate_html_ko(tmpdir, caplog):
+def test_validate_handlebar_ko(tmpdir, caplog):
     html_file = tmpdir.join('test.hbs')
     html_file.write(HTML_WITH_HANDLEBAR_TITLE)
     assert validate_html([html_file.strpath]) == 1
