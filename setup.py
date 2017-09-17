@@ -3,9 +3,9 @@ from setuptools import setup
 
 setup(
     name='pre-commit-hooks',
-    description='A pre-commit hook to validate your HTML files / templates against the W3C v.Nu checker',
-    url='https://github.com/Lucas-C/pre-commit-hooks-html',
-    version='1.3.5',
+    description='Pre-commit hooks requiring a Java interpreter in the $PATH',
+    url='https://github.com/Lucas-C/pre-commit-hooks-java',
+    version='1.3.6',
 
     author='Lucas Cimon',
     author_email='lucas.cimon@gmail.com',
