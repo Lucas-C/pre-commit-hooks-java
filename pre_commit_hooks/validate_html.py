@@ -58,6 +58,7 @@ def main(argv=None):
 class Placeholder:
     def __init__(self, default_value, env=None):
         self.default_value = default_value
+        # pylint: disable=eval-used
         self.env = {k: eval(v) for k, v in env or ()}
 
 
@@ -144,6 +145,7 @@ class Jinja2PlaceholderContext(Context):
         self.placeholder = placeholder
     def call(self, *_, **__):
         return RecursiveDefaultPlaceholder(self.placeholder.default_value)
+    # pylint: disable=unused-argument
     def resolve_or_missing(self, key, missing=None):
         if key in self.placeholder.env:
             return self.placeholder.env[key]
