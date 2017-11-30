@@ -25,6 +25,8 @@ DUMMY
 DUMMY
 hardcoded
 DUMMY
+Dummy
+"DUMMY"
 CONDITIONAL
 
 DUMMY-iterstep-DUMMY-iterstep-

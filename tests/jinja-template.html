@@ -5,6 +5,8 @@
 {{ x[1:] }}
 {{ 'hardcoded' }}
 {{ 'X'.join(article.content.split(' ')[:75])|striptags|striptags }}
+{{ stuff|capitalize }}
+{{ bidule|tojson }}
 {% if dummy %}CONDITIONAL{% endif %}
 {% set bullet = joiner(" &bullet; ") %}
 {% for truc in machin %}{{bullet()}}-iterstep-{% endfor %}

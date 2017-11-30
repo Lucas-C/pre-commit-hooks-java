@@ -152,13 +152,9 @@ class Jinja2PlaceholderContext(Context):
         return RecursiveDefaultPlaceholder(self.placeholder.default_value)
 
 
-class RecursiveDefaultPlaceholder:
-    def __init__(self, default):
-        self.default = default
-    def __str__(self):
-        return str(self.default)
+class RecursiveDefaultPlaceholder(str):  # must be JSON serializable to support |tojson filter
     def __getattribute__(self, name):
-        if name == 'default' or name.startswith('__'):
+        if hasattr(str, name) or name.startswith('__'):
             return object.__getattribute__(self, name)
         return self
     def __iter__(self):
