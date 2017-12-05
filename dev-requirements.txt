@@ -2,4 +2,3 @@
 pre-commit
 pytest
 pytest-cov
-pytest-catchlog # to avoid this error with capsys & Python 2 : "ValueError: I/O operation on closed file"
