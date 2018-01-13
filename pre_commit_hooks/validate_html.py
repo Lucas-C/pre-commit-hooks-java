@@ -12,8 +12,12 @@ from html5validator.validator import Validator
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('filenames', nargs='*', help='filenames to check')
-    parser.add_argument('--show-warnings', dest='error_only',
+    parser.add_argument('--show-warnings', dest='errors_only',
                         action='store_false', default=True)
+    parser.add_argument('--no-langdetect', action='store_true', default=False,
+                        help='disable language detection')
+    parser.add_argument('--format', choices=['gnu', 'xml', 'json', 'text'],
+                        help='output format', default=None)
     parser.add_argument('--ignore', action='append',
                         help='ignore messages containing the given strings')
     parser.add_argument('--ignore-re', action='append',
@@ -41,16 +45,28 @@ def main(argv=None):
 
     logging.basicConfig(level=getattr(logging, args.log))
 
+    java_options = ''
+    vnu_options = []
+    if args.errors_only:
+        vnu_options.append('--errors_only')
+    if args.no_langdetect:
+        vnu_options.append('--no-langdetect')
+    if args.format:
+        vnu_options.append('--format')
+        vnu_options.append(args.format)
+    java_options = []
+    if args.stack_size:
+        java_options.append('-Xss{}k'.format(args.stack_size))
+
     placeholder = Placeholder(args.mustache_remover_default_value, args.mustache_remover_env)
     validator = CustomHTMLValidator(mustache_remover_name=args.mustache_remover,
                                     mustache_remover_copy_ext=args.mustache_remover_copy_ext,
                                     mustache_remover_placeholder=placeholder,
                                     templates_include_dir=args.templates_include_dir,
+                                    java_options=java_options, vnu_options=vnu_options, 
                                     directory=None, match=None, ignore=args.ignore, ignore_re=args.ignore_re)
     return validator.validate(
         args.filenames,
-        errors_only=args.error_only,
-        stack_size=args.stack_size,
         remove_mustaches=args.remove_mustaches,
     )
 
@@ -71,7 +87,7 @@ class CustomHTMLValidator(Validator):
         self.mustache_remover_placeholder = mustache_remover_placeholder
         self.mustache_remover = Jinja2MustacheRemover(templates_include_dir) if mustache_remover_name == 'jinja2' else PybarMustacheRemover()
 
-    def validate(self, files=None, remove_mustaches=False, **kwargs):
+    def validate(self, files=None, remove_mustaches=False):
         if not files:
             files = self.all_files()
         if remove_mustaches:
@@ -79,9 +95,9 @@ class CustomHTMLValidator(Validator):
                                                 self.mustache_remover,
                                                 copy_ext=self.mustache_remover_copy_ext,
                                                 placeholder=self.mustache_remover_placeholder) as tmpfiles:
-                return Validator.validate(self, tmpfiles, **kwargs)
+                return Validator.validate(self, tmpfiles)
         else:
-            return Validator.validate(self, files, **kwargs)
+            return Validator.validate(self, files)
 
 @contextlib.contextmanager
 def generate_mustachefree_tmpfiles(filepaths, mustache_remover, copy_ext, placeholder):
