@@ -1,10 +1,11 @@
-language: java
-jdk: oraclejdk8
-# Installing packages globally fails with:
-#   File "/usr/lib/python2.7/shutil.py", line 83, in copyfile
-#     with open(dst, 'wb') as fdst:
-# IOError: [Errno 13] Permission denied: '/usr/local/lib/python2.7/dist-packages/nodeenv.py'
-install:
-- python --version && pip --version
-- pip install --user --upgrade -r dev-requirements.txt
+language: python
+python:
+- "2.7"
+- "3.6"
+- "3.7"
+addons:
+  apt:
+    packages:
+      - oracle-java8-set-default
+install: pip install --upgrade -r dev-requirements.txt
 script:  pre-commit run --all-files

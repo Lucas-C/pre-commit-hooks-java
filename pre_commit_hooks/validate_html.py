@@ -177,6 +177,8 @@ class RecursiveDefaultPlaceholder(str):  # must be JSON serializable to support 
         return iter([self, self])
     def __getitem__(self, _):
         return self
+    def __getslice__(self, *_):
+        return self
 
 
 class MustacheSubstitutionFail(Exception):
