@@ -1,10 +1,10 @@
 from __future__ import print_function
 import argparse, contextlib, logging, os, shutil, sys
+from six import raise_from, text_type
 from jinja2 import Environment, FileSystemLoader
 from jinja2.defaults import DEFAULT_NAMESPACE
 from jinja2.runtime import Context
 from jinja2.utils import concat
-from six import raise_from, text_type
 from pybars import Compiler as PybarCompiler, PybarsError
 from html5validator.validator import Validator
 
