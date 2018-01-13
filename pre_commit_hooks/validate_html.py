@@ -63,7 +63,7 @@ def main(argv=None):
                                     mustache_remover_copy_ext=args.mustache_remover_copy_ext,
                                     mustache_remover_placeholder=placeholder,
                                     templates_include_dir=args.templates_include_dir,
-                                    java_options=java_options, vnu_options=vnu_options, 
+                                    java_options=java_options, vnu_options=vnu_options,
                                     directory=None, match=None, ignore=args.ignore, ignore_re=args.ignore_re)
     return validator.validate(
         args.filenames,

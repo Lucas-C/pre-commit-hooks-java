@@ -4,5 +4,7 @@ jdk: oraclejdk8
 #   File "/usr/lib/python2.7/shutil.py", line 83, in copyfile
 #     with open(dst, 'wb') as fdst:
 # IOError: [Errno 13] Permission denied: '/usr/local/lib/python2.7/dist-packages/nodeenv.py'
-install: pip install --user --upgrade -r dev-requirements.txt
+install:
+- python --version && pip --version
+- pip install --user --upgrade -r dev-requirements.txt
 script:  pre-commit run --all-files
