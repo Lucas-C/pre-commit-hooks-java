@@ -56,8 +56,8 @@ def test_validate_jinja2_errors(caplog):
                           '--templates-include-dir=tests',
                           'tests/jinja-template.html']) == 2
     errors = caplog.text.splitlines()
-    assert 'Expected "<!DOCTYPE html>"' in errors[0]
-    assert 'Element "head" is missing a required instance of child element "title"' in errors[1]
+    assert any('Expected "<!DOCTYPE html>"' in line for line in errors)
+    assert any('Element "head" is missing a required instance of child element "title"' in line for line in errors)
 
 
 def test_validate_handlebar_ko(tmpdir, caplog):
