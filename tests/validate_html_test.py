@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-from pre_commit_hooks.validate_html import Jinja2MustacheRemover, Placeholder, PybarMustacheRemover, main as validate_html
+from pre_commit_hooks.validate_html import Jinja2MustacheRemover, Placeholder, PybarMustacheRemover, RegexMustacheRemover, main as validate_html
 
 
 HTML_WITH_HANDLEBAR_TITLE = '''<!DOCTYPE html>
@@ -26,6 +26,7 @@ DUMMY
 hardcoded
 DUMMY
 Dummy
+
 "DUMMY"
 CONDITIONAL
 
@@ -43,6 +44,27 @@ def test_PybarMustacheRemover_providedEnv(tmpdir):
     hbs_file = tmpdir.join('test.hbs')
     hbs_file.write('{{x}}')
     assert PybarMustacheRemover().clean_template(hbs_file.strpath, Placeholder('DUMMY', (('x', '42'),))) == '42'
+
+def test_RegexMustacheRemover():
+    assert RegexMustacheRemover().clean_template('tests/jinja-template.html', Placeholder('DUMMY')) == '''
+Jinja test
+
+DUMMY
+DUMMY
+DUMMY
+DUMMY
+DUMMY
+DUMMY
+DUMMY
+CONDITIONAL
+
+DUMMY-iterstep-
+main template stuff
+
+
+
+
+'''
 
 def test_validate_pybar_ok(tmpdir, caplog):
     hbs_file = tmpdir.join('test.hbs')

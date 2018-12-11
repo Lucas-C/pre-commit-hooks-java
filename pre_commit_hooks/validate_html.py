@@ -118,7 +118,10 @@ class RegexMustacheRemover:
     @staticmethod
     def clean_template(filepath, placeholder):
         with open(filepath) as file:
-            return re.sub('{{.+?}}', placeholder.default_value, file.read())
+            content = file.read()
+            content = re.sub('{{.+?}}', placeholder.default_value, content)
+            content = re.sub('{%.+?%}', '', content)
+            return content
 
 
 class PybarMustacheRemover:

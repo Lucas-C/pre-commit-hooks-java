@@ -6,6 +6,7 @@
 {{ 'hardcoded' }}
 {{ 'X'.join(article.content.split(' ')[:75])|striptags|striptags }}
 {{ stuff|capitalize }}
+{{ stuff|unknownfilter }}
 {{ bidule|tojson }}
 {% if dummy %}CONDITIONAL{% endif %}
 {% set bullet = joiner(" &bullet; ") %}
