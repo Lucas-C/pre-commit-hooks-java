@@ -1,5 +1,6 @@
 from __future__ import print_function
-import argparse, contextlib, logging, os, shutil, sys
+import argparse, contextlib, logging, os, re, shutil, sys
+from collections import defaultdict
 from six import raise_from, text_type
 from jinja2 import Environment, FileSystemLoader
 from jinja2.defaults import DEFAULT_NAMESPACE
@@ -29,7 +30,7 @@ def main(argv=None):
     parser.add_argument('-lll', action='store_const', dest='stack_size', const=32768,
                         help='run on larger files: sets Java stack size to 32768k')
     parser.add_argument('--remove-mustaches', action='store_true', default=False)
-    parser.add_argument('--mustache-remover', choices=('pybar', 'jinja2'), default='pybar')
+    parser.add_argument('--mustache-remover', choices=('jinja2', 'pybar', 'regex'), default='regex')
     parser.add_argument('--mustache-remover-env', action='append', nargs=2, help='Predefined KEY VALUE pair to substitute in the template')
     parser.add_argument('--mustache-remover-copy-ext', default='~~')
     parser.add_argument('--mustache-remover-default-value', default='DUMMY')
@@ -75,7 +76,12 @@ class CustomHTMLValidator(Validator):
         Validator.__init__(self, *args, **kwargs)
         self.mustache_remover_copy_ext = mustache_remover_copy_ext
         self.mustache_remover_placeholder = mustache_remover_placeholder
-        self.mustache_remover = Jinja2MustacheRemover(templates_include_dir) if mustache_remover_name == 'jinja2' else PybarMustacheRemover()
+        if mustache_remover_name == 'jinja2':
+            self.mustache_remover = Jinja2MustacheRemover(templates_include_dir)
+        elif mustache_remover_name == 'pybar':
+            self.mustache_remover = PybarMustacheRemover()
+        else:
+            self.mustache_remover = RegexMustacheRemover()
 
     def validate(self, files=None, remove_mustaches=False):
         if not files:
@@ -106,6 +112,13 @@ def generate_mustachefree_tmpfiles(filepaths, mustache_remover, copy_ext, placeh
     finally:
         for tmpfile in mustachefree_tmpfiles:
             os.remove(tmpfile)
+
+
+class RegexMustacheRemover:
+    @staticmethod
+    def clean_template(filepath, placeholder):
+        with open(filepath) as file:
+            return re.sub('{{.+?}}', placeholder.default_value, file.read())
 
 
 class PybarMustacheRemover:
@@ -142,6 +155,10 @@ class Jinja2PlaceholderEnvironment(Environment):
     def __init__(self, placeholder, *args, **kwargs):
         Environment.__init__(self, *args, **kwargs)
         self.placeholder = placeholder
+        filters = DefaultDict(lambda: (lambda _: ''))
+        # pylint: disable=access-member-before-definition
+        filters.update(self.filters)
+        self.filters = filters
     def getattr(self, *_, **__):
         return RecursiveDefaultPlaceholder(self.placeholder.default_value)
 
@@ -169,6 +186,10 @@ class RecursiveDefaultPlaceholder(str):  # must be JSON serializable to support 
         return self
     def __getslice__(self, *_):
         return self
+
+
+class DefaultDict(defaultdict):
+    get = defaultdict.__getitem__  # so that d.get(foo) is the same as d[foo]
 
 
 class MustacheSubstitutionFail(Exception):
