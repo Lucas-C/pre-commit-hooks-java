@@ -9,7 +9,7 @@ Currently, only [handlebars](http://handlebarsjs.com) templates are supported. P
 ## Usage
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-java
-    sha: v1.3.6
+    sha: 1.3.8
     hooks:
     -   id: validate-html
 ```
@@ -18,7 +18,7 @@ Advanced usage:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-java
-    sha: v1.3.6
+    sha: 1.3.8
     hooks:
     -   id: validate-html
         args: [--remove-mustaches, "--ignore=Expected \"<!DOCTYPE html>\""]
@@ -29,7 +29,7 @@ With Jinja templates:
 
 ```
 -   repo: https://github.com/Lucas-C/pre-commit-hooks-java
-    sha: v1.3.6
+    sha: 1.3.8
     hooks:
     -   id: validate-html
         args: [--remove-mustaches, --mustache-remover=jinja2]
