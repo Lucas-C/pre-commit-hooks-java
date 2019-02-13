@@ -115,10 +115,11 @@ def generate_mustachefree_tmpfiles(filepaths, mustache_remover, copy_ext, placeh
 
 
 class RegexMustacheRemover:
+    # pylint: disable=no-init
     @staticmethod
     def clean_template(filepath, placeholder):
-        with open(filepath) as file:
-            content = file.read()
+        with open(filepath) as tpl_file:
+            content = tpl_file.read()
             content = re.sub('{{.+?}}', placeholder.default_value, content)
             content = re.sub('{%.+?%}', '', content)
             return content

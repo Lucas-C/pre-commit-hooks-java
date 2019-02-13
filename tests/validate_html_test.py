@@ -66,11 +66,10 @@ main template stuff
 
 '''
 
-def test_validate_pybar_ok(tmpdir, caplog):
+def test_validate_pybar_ok(tmpdir):
     hbs_file = tmpdir.join('test.hbs')
     hbs_file.write(HTML_WITH_HANDLEBAR_TITLE)
     assert validate_html(['--remove-mustaches', hbs_file.strpath]) == 0
-    assert 'All good.' in caplog.text
 
 def test_validate_jinja2_errors(caplog):
     assert validate_html(['--remove-mustaches',
