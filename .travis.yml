@@ -5,7 +5,7 @@ python:
 addons:
   apt:
     packages:
-      - oracle-java8-set-default
+      - openjdk-8-jdk
 install: pip install --upgrade -r dev-requirements.txt
 script:  pre-commit run --all-files
 notifications:
