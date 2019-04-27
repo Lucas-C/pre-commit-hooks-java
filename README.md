@@ -1,6 +1,6 @@
 [![](https://travis-ci.org/Lucas-C/pre-commit-hooks-java.svg?branch=master)](https://travis-ci.org/Lucas-C/pre-commit-hooks-java)
 
-Pre-commit hooks requiring a `java` interpreter in the `$PATH`.
+[Pre-commit](https://pre-commit.com) hooks requiring a `java` interpreter in the `$PATH`.
 
 The `validate-html` hook uses the v.Nu validator: http://validator.w3.org/nu/.
 It can automagically replace mustaches by a default value in order to validate templates.
