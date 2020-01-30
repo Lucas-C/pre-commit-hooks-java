@@ -1,4 +1,3 @@
-from __future__ import print_function
 import argparse, contextlib, logging, os, re, shutil, sys
 from collections import defaultdict
 from six import raise_from, text_type
