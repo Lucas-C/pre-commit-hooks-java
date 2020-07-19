@@ -2,4 +2,4 @@
     name: HTML syntax validator using W3C v.Nu checker, with support for handlebars/jinja2 templates
     entry: validate_html
     language: python
-    files: .*\.(html|hbs)$
+    files: .*\.(html|hbs|jinja)$
